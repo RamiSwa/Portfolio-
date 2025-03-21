@@ -178,7 +178,7 @@ if USE_CLOUDFLARE_R2:
     AWS_S3_ENDPOINT_URL = os.getenv("R2_ENDPOINT_URL")
 
     # ✅ Force Signature Version 4 (to fix unauthorized error)
-    AWS_S3_ADDRESSING_STYLE = "virtual"
+    AWS_S3_ADDRESSING_STYLE = "path"
     AWS_S3_SIGNATURE_VERSION = "s3v4"
 
     # ✅ Use the custom Cloudflare domain instead of R2.dev
