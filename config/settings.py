@@ -59,6 +59,14 @@ INSTALLED_APPS = [
     
     'django_celery_results',  
     'django_redis', 
+
+    'core',
+    'home',
+    'projects',
+    'blog',
+    'testimonials',
+    'contact',
+
 ]
 
 MIDDLEWARE = [

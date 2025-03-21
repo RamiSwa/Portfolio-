@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 8000
 
 # ✅ Run migrations, collect static files, and start the server
-CMD ["bash", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:${PORT:-8000} config.wsgi:application"]
+CMD ["bash", "-c", "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:${PORT:-8080} config.wsgi:application"]
