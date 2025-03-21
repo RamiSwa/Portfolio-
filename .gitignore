@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 README_COMMANDS.md
+descriptions-projects-AIFarming.md
+descriptions-projects-road-marking.md
+descriptions-luxeEssence.md
+descriptions-luxury-villa.md
 # Distribution / packaging
 .Python
 build/
