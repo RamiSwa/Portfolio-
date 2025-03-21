@@ -39,11 +39,11 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
-
 CSRF_TRUSTED_ORIGINS = [
-    "portfolio-production-2c06.up.railway.app",
-    "http://127.0.0.1:8000"
+    "https://portfolio-production-2c06.up.railway.app",
+    "http://127.0.0.1:8000",  # For local development
 ]
+
 
 
 
