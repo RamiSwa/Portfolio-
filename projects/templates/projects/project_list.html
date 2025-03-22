@@ -6,8 +6,8 @@
 
   <!-- 🚀 Featured Projects -->
   {% if featured_projects %}
-    <section class="featured-section rounded-4 my-5 py-4 px-2 px-md-4">
-      <div class="container text-center mb-5">
+    <section class="featured-section rounded-4 my-5">
+      <div class="container text-center mb-4">
         <h1 class="display-5 fw-bold">🚀 Featured Projects</h1>
         <p class="lead">These are my most exciting and innovative projects.</p>
       </div>
@@ -15,57 +15,49 @@
       <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for project in featured_projects %}
           <div class="col">
-            <div class="featured-project position-relative bg-white rounded-4 shadow-lg h-100 p-0 overflow-hidden">
+            <div class="featured-project position-relative p-4 bg-white rounded-4 shadow-lg h-100">
               <div class="ribbon">⭐ Featured</div>
-
-              <!-- Image Carousel -->
-              <div id="carouselFeatured{{ project.id }}" class="carousel slide" data-bs-ride="carousel">
+              
+              <!-- Image carousel on top -->
+              <div id="carouselFeatured{{ project.id }}" class="carousel slide mb-3" data-bs-ride="carousel">
                 <div class="carousel-inner">
                   {% for image in project.images.all %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                      <img src="{{ image.image.url }}" class="d-block w-100 featured-img" alt="{{ project.title }}">
+                      <img src="{{ image.image.url }}" class="d-block w-100 rounded" alt="{{ project.title }}">
                     </div>
                   {% endfor %}
                 </div>
               </div>
 
-              <div class="p-4 d-flex flex-column h-100">
-                <h3 class="fw-bold text-dark">{{ project.title }}</h3>
-                <p class="text-muted">{{ project.meta_description }}</p>
+              <h2 class="fw-bold text-dark">{{ project.title }}</h2>
+              <p class="text-muted">{{ project.meta_description }}</p>
+              <div class="mb-3 tech-badges d-flex flex-wrap gap-2">
+                {% for tech in project.technologies.all %}
+                <span class="badge custom-badge" title="{{ tech.name }}">{{ tech.name }}</span>
+                {% endfor %}
+              </div>
 
-                <div class="mb-3 tech-badges d-flex flex-wrap gap-2">
-                  {% for tech in project.technologies.all %}
-                    <span class="badge bg-primary">{{ tech.name }}</span>
-                  {% endfor %}
+              <!-- Button layout: Left → Details, Center → GitHub, Right → Live Demo -->
+              <div class="row text-center mt-4">
+                <div class="col">
+                  <a href="{% url 'projects:project_detail' slug=project.slug %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye"></i> Details
+                  </a>
                 </div>
-
-                <!-- Custom Button Grid -->
-                <div class="row mt-auto pt-3 text-center">
-                  <div class="col-4">
-                    <a href="{% url 'projects:project_detail' slug=project.slug %}" class="btn btn-outline-primary btn-sm w-100">
-                      <i class="bi bi-eye"></i> Details
+                <div class="col">
+                  {% if project.github_link %}
+                    <a href="{{ project.github_link }}" class="btn btn-dark btn-sm">
+                      <i class="bi bi-github"></i> GitHub
                     </a>
-                  </div>
-                  <div class="col-4">
-                    {% if project.github_link %}
-                      <a href="{{ project.github_link }}" class="btn btn-dark btn-sm w-100">
-                        <i class="bi bi-github"></i> GitHub
-                      </a>
-                    {% else %}
-                      <div class="invisible btn btn-dark btn-sm w-100">Empty</div>
-                    {% endif %}
-                  </div>
-                  <div class="col-4">
-                    {% if project.demo_link %}
-                      <a href="{{ project.demo_link }}" class="btn btn-success btn-sm w-100">
-                        <i class="bi bi-box-arrow-up-right"></i> Live Demo
-                      </a>
-                    {% else %}
-                      <div class="invisible btn btn-success btn-sm w-100">Empty</div>
-                    {% endif %}
-                  </div>
+                  {% endif %}
                 </div>
-
+                <div class="col">
+                  {% if project.demo_link %}
+                    <a href="{{ project.demo_link }}" class="btn btn-success btn-sm">
+                      <i class="bi bi-box-arrow-up-right"></i> Live Demo
+                    </a>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
@@ -76,16 +68,16 @@
 
   <!-- 💼 My Projects -->
   <section class="projects-section rounded-4 mt-5 pb-5">
-    <div class="container text-center mb-5 px-3 py-4 section-header rounded shadow-sm">
-      <h1 class="display-6 fw-bold mb-2"><i class="bi bi-briefcase-fill me-2"></i>My Projects</h1>
-      <p class="lead m-0 text-muted">Explore all of my projects below.</p>
+    <div class="container text-center mb-4 projects-header gap-2">
+      <h1 class="display-5 fw-bold">💼 My Projects</h1>
+      <p class="lead">Explore all of my projects below.</p>
     </div>
 
-    <div class="row row-cols-1 row-cols-sm-2 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 g-4 mt-4">
       {% for project in projects %}
         <div class="col">
           <div class="card h-100 shadow-sm border-0 project-card">
-            <div class="carousel slide" id="carousel{{ project.id }}" data-bs-ride="carousel">
+            <div id="carousel{{ project.id }}" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-inner">
                 {% for image in project.images.all %}
                   <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -99,23 +91,30 @@
               <p class="text-muted">{{ project.meta_description }}</p>
               <div class="mt-auto tech-badges d-flex flex-wrap gap-2 mb-2">
                 {% for tech in project.technologies.all %}
-                  <span class="badge bg-primary" title="{{ tech.name }}">{{ tech.name }}</span>
+                <span class="badge custom-badge" title="{{ tech.name }}">{{ tech.name }}</span>
                 {% endfor %}
               </div>
-              <div class="d-flex flex-wrap gap-2 mt-auto">
-                <a href="{% url 'projects:project_detail' slug=project.slug %}" class="btn btn-outline-primary btn-sm">
-                  <i class="bi bi-eye"></i> Details
-                </a>
-                {% if project.github_link %}
-                  <a href="{{ project.github_link }}" class="btn btn-dark btn-sm">
-                    <i class="bi bi-github"></i> GitHub
+              <!-- Button layout: Left → Details, Center → GitHub, Right → Live Demo -->
+              <div class="row text-center mt-4">
+                <div class="col">
+                  <a href="{% url 'projects:project_detail' slug=project.slug %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-eye"></i> Details
                   </a>
-                {% endif %}
-                {% if project.demo_link %}
-                  <a href="{{ project.demo_link }}" class="btn btn-success btn-sm">
-                    <i class="bi bi-box-arrow-up-right"></i> Live Demo
-                  </a>
-                {% endif %}
+                </div>
+                <div class="col">
+                  {% if project.github_link %}
+                    <a href="{{ project.github_link }}" class="btn btn-dark btn-sm">
+                      <i class="bi bi-github"></i> GitHub
+                    </a>
+                  {% endif %}
+                </div>
+                <div class="col">
+                  {% if project.demo_link %}
+                    <a href="{{ project.demo_link }}" class="btn btn-success btn-sm">
+                      <i class="bi bi-box-arrow-up-right"></i> Live Demo
+                    </a>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
@@ -131,7 +130,7 @@
   :root {
     --primary-color: #ff7b54;
     --secondary-bg: #f8f9fa;
-    --badge-color: #007bff;
+    --badge-color: #33ff00;
   }
 
   .featured-section {
@@ -154,11 +153,6 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   }
 
-  .featured-img {
-    height: 220px;
-    object-fit: cover;
-  }
-
   .carousel-inner img {
     object-fit: cover;
     height: 180px;
@@ -176,7 +170,14 @@
     padding: 0.35em 0.6em;
     white-space: nowrap;
   }
-
+  .custom-badge {
+    background-color: #ff7b54; /* Warm orange — matches your primary */
+    color: #fff;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.35em 0.65em;
+  }
+  
   .tech-badges {
     max-height: 90px;
     overflow-y: auto;
@@ -193,45 +194,49 @@
     border-radius: 4px;
   }
 
+  /* Ribbon */
   .ribbon {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: -10px;
+    left: -10px;
     background: #ffc107;
     color: #000;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 5px 10px;
+    border-bottom-right-radius: 8px;
     z-index: 2;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
-  .section-header {
-    background: #ffffff;
-    border-left: 5px solid var(--primary-color);
-    max-width: 600px;
+  /* Projects header styling */
+  .projects-header {
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   }
 
   @media (max-width: 576px) {
-    .carousel-inner img,
-    .featured-img {
+    .carousel-inner img {
       height: 160px;
     }
 
     .project-card .btn,
     .featured-project .btn {
-      flex: 1 1 100%;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .featured-project {
       text-align: center;
+      padding: 1rem;
     }
 
     .ribbon {
-      font-size: 0.6rem;
-      padding: 2px 6px;
-    }
-
-    .row.mt-auto.pt-3 .col-4 {
-      padding-bottom: 0.5rem;
+      font-size: 0.65rem;
+      padding: 3px 8px;
     }
   }
 </style>

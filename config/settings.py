@@ -56,9 +56,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'ckeditor',
+    'ckeditor_uploader',
     
     'django_celery_results',  
     'django_redis', 
+
+
 
     'core',
     'home',
@@ -154,6 +159,42 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+
+# CKEditor Settings
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_RESTRICT_BY_USER = True
+CKEDITOR_RESTRICT_BY_DATE = True
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', 'Blockquote'],
+            ['Link', 'Unlink'],
+            ['Image', 'Embed', 'Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor', 'Smiley'],
+            ['Format', 'Font', 'FontSize'],
+            ['Preview', 'RemoveFormat', 'Source']
+        ],
+        'height': 300,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'uploadimage', 'autogrow', 'smiley', 'colorbutton', 'font',
+            'preview', 'embed', 'autoembed', 'widget', 'lineutils'
+        ]),
+        'autoGrow_minHeight': 200,
+        'autoGrow_maxHeight': 600,
+        'removePlugins': 'stylesheetparser',
+        'allowedContent': True,
+    }
+}
+
+
+# Required for Cloudflare R2 image hosting
+AWS_QUERYSTRING_AUTH = False
 
 
 # Static files (CSS, JavaScript, Images)

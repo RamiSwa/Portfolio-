@@ -1,33 +1,343 @@
 {% extends "base.html" %}
 {% block title %}{{ project.title }}{% endblock %}
+
 {% block content %}
-<h1>{{ project.title }}</h1>
-<p>{{ project.description }}</p>
+<!-- Make the main container focusable -->
+<div class="project-detail-page" tabindex="0">
 
-{% if project.technologies.all %}
-  <h3>Built With:</h3>
-  <ul>
-    {% for tech in project.technologies.all %}
-      <li>
-        {% if tech.link %}
-          <a href="{{ tech.link }}" target="_blank">{{ tech.name }}</a>
-        {% else %}
-          {{ tech.name }}
+  <!-- 🚀 Hero Section -->
+  <section class="hero text-white py-5 px-3 px-md-5 text-center mb-5">
+    <div class="container">
+      <h1 class="display-4 fw-bold">{{ project.title }}</h1>
+      {% if project.meta_description %}
+        <p class="lead mt-3">{{ project.meta_description }}</p>
+      {% endif %}
+      <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+        {% if project.github_link %}
+          <a href="{{ project.github_link }}" class="btn btn-outline-light btn-lg shadow-sm" target="_blank">
+            <i class="bi bi-github me-1"></i> GitHub
+          </a>
         {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-{% endif %}
+        {% if project.demo_link %}
+          <a href="{{ project.demo_link }}" class="btn btn-success btn-lg shadow-sm" target="_blank">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Live Demo
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
 
-{% if project.github_link %}
-  <p><a href="{{ project.github_link }}" target="_blank">GitHub</a></p>
-{% endif %}
-{% if project.demo_link %}
-  <p><a href="{{ project.demo_link }}" target="_blank">Live Demo</a></p>
-{% endif %}
+  <div class="container px-3 px-md-5 pb-5">
+    <!-- 🏷️ Project Metadata -->
+    <div class="project-meta mb-4 d-flex flex-wrap gap-3 justify-content-center">
+      <span class="badge bg-secondary">
+        <i class="bi bi-folder-fill me-1"></i>{{ project.category }}
+      </span>
+      <span class="badge bg-light border text-dark">
+        <i class="bi bi-calendar-event me-1"></i>{{ project.date_created }}
+      </span>
+      {% if project.is_featured %}
+        <span class="badge bg-warning text-dark">
+          <i class="bi bi-star-fill me-1"></i> Featured Project
+        </span>
+      {% endif %}
+    </div>
 
-<h3>Screenshots</h3>
-{% for image in project.images.all %}
-  <img src="{{ image.image.url }}" style="max-width: 400px;">
-{% endfor %}
+    <!-- 📝 Full Description -->
+    <div class="full-description mb-5">
+        {{ project.description|linebreaks }}
+    </div>
+
+    <!-- 🔧 Tech Stack -->
+    {% if project.technologies.all %}
+      <h4 class="tech-stack-title">🔧 Built With</h4>
+      <div class="d-flex flex-wrap gap-2 mb-5">
+        {% for tech in project.technologies.all %}
+          {% if tech.link %}
+            <a href="{{ tech.link }}" target="_blank" class="badge tech-badge text-decoration-none">{{ tech.name }}</a>
+          {% else %}
+            <span class="badge tech-badge">{{ tech.name }}</span>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- 🖼️ Screenshots -->
+    {% if project.images.all %}
+      <h4 class="fw-bold mb-3">🖼️ Screenshots</h4>
+      <!-- Responsive layout: 1 col (XS), 2 cols (SM+MD), 3 cols (LG) -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        {% for image in project.images.all %}
+          <div class="col">
+            <div class="card h-100 screenshot-card">
+              <!-- Pass the slide index to openModal() -->
+              <div class="screenshot-overlay" onclick="openModal({{ forloop.counter0 }})">
+                <img src="{{ image.image.url }}" alt="Screenshot" class="card-img-top object-fit-cover">
+                <div class="hover-text">Click to Enlarge</div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- 📬 Contact CTA -->
+    <div class="text-center mt-5 pt-5">
+      <div class="cta-box p-4 p-md-5 rounded-4 text-dark shadow animate-fade-in">
+        <h2 class="fw-bold mb-3">💼 Like what you see?</h2>
+        <p class="fs-5">
+          I'm available for freelance projects, consulting, and collaboration.
+          Let’s build something extraordinary together.
+        </p>
+        <a href="/contact" class="btn btn-primary btn-lg mt-3">
+          <i class="bi bi-envelope-fill me-1"></i> Contact Me
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 🌟 MODAL (Bootstrap 5) with Carousel for Screenshots -->
+<div class="modal fade" id="screenshotModal" tabindex="-1" role="dialog" aria-labelledby="screenshotModalLabel">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <!-- Modal Header with 'X' button in top-right corner -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="screenshotModalLabel">Screenshots</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Modal Body with the Carousel -->
+      <div class="modal-body p-0">
+         <div id="screenshotCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-keyboard="true">
+            <div class="carousel-inner">
+               {% for image in project.images.all %}
+                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="Screenshot">
+                 </div>
+               {% endfor %}
+            </div>
+            <!-- Carousel controls for clicking & keyboard navigation -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#screenshotCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#screenshotCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✨ Styles -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* 🎯 Hero Section */
+  .hero {
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+      linear-gradient(to right, #06b6d4, #3b82f6),
+      url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    padding: 5rem 1rem;
+    border-radius: 0 0 1rem 1rem;
+  }
+  .hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  .hero p.lead {
+    font-size: 1.3rem;
+    color: #f0f0f0;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+  }
+
+  /* 🏷️ Project Metadata */
+  .project-meta .badge {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+  }
+  .project-meta .badge.bg-secondary {
+    background-color: #06b6d4 !important;
+    color: #fff !important;
+  }
+  .project-meta .badge.bg-light.border.text-dark {
+    background-color: #3b82f6 !important;
+    color: #fff !important;
+    border: none !important;
+  }
+  .project-meta .badge.bg-warning.text-dark {
+    background-color: #9333ea !important;
+    color: #fff !important;
+  }
+
+  /* 📝 Full Description */
+  .full-description {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: #333;
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .full-description p {
+    margin-bottom: 0;
+  }
+
+  /* 🔧 Tech Stack Title */
+  .tech-stack-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  /* 🌈 Tech Badge */
+  .tech-badge {
+    font-size: 0.95rem;
+    background-color: #eef2ff;
+    color: #4f46e5;
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 0.45em 0.9em;
+    transition: 0.2s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tech-badge:hover {
+    background-color: #4f46e5;
+    color: #fff;
+  }
+
+  /* 📷 Screenshot Cards */
+  .screenshot-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .screenshot-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .screenshot-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .screenshot-card:hover img {
+    transform: scale(1.04);
+  }
+
+  /* 📷 Screenshot Overlay (for hover text) */
+  .screenshot-overlay {
+    position: relative;
+    cursor: pointer;
+  }
+  .hover-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.4rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+  .screenshot-overlay:hover .hover-text {
+    opacity: 1;
+  }
+
+  /* ✉️ CTA Section */
+  .cta-box {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    transition: all 0.3s ease;
+  }
+  .cta-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+  }
+  .animate-fade-in {
+    animation: fadeIn 1s ease-out both;
+  }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .hero h1 {
+      font-size: 2.25rem;
+    }
+    .hero p.lead {
+      font-size: 1.1rem;
+    }
+    .btn {
+      width: 100%;
+    }
+    .tech-badge {
+      font-size: 0.85rem;
+    }
+    .screenshot-card img {
+      height: 160px;
+    }
+  }
+</style>
+
+<!-- JavaScript to open the modal and handle carousel navigation -->
+<script>
+function openModal(index) {
+  var myModal = new bootstrap.Modal(document.getElementById('screenshotModal'));
+  myModal.show();
+  var carouselElement = document.getElementById('screenshotCarousel');
+  var bsCarousel = bootstrap.Carousel.getInstance(carouselElement);
+  if (!bsCarousel) {
+    bsCarousel = new bootstrap.Carousel(carouselElement, {
+      interval: false,
+      keyboard: true
+    });
+  }
+  bsCarousel.to(index);
+}
+
+// Before the modal is hidden, check if any element inside it is focused and blur it
+document.getElementById('screenshotModal').addEventListener('hide.bs.modal', function () {
+  if (this.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+});
+
+// After the modal is hidden, move focus to the main container
+document.getElementById('screenshotModal').addEventListener('hidden.bs.modal', function () {
+  document.querySelector('.project-detail-page').focus();
+});
+</script>
+
 {% endblock %}

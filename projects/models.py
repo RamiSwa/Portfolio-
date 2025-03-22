@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
+from ckeditor_uploader.fields import RichTextUploadingField  # ✅ NEW
 
 class Technology(models.Model):
     """Represents a single technology or tool (e.g., Django, Docker, PostgreSQL)."""
@@ -13,14 +14,13 @@ class Technology(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField()
+    description = RichTextUploadingField()  # ✅ Replaces TextField
     category = models.CharField(max_length=100)
     github_link = models.URLField(blank=True, null=True)
     demo_link = models.URLField(blank=True, null=True)
     date_created = models.DateField(auto_now_add=True)
     meta_description = models.CharField(max_length=160, blank=True)
 
-    # ✅ NEW: ManyToMany with Technology
     technologies = models.ManyToManyField(Technology, related_name="projects", blank=True)
     is_featured = models.BooleanField(default=False)
 
