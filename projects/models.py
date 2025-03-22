@@ -22,6 +22,7 @@ class Project(models.Model):
 
     # ✅ NEW: ManyToMany with Technology
     technologies = models.ManyToManyField(Technology, related_name="projects", blank=True)
+    is_featured = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date_created']
