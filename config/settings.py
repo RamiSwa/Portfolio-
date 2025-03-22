@@ -177,20 +177,25 @@ CKEDITOR_CONFIGS = {
             ['Image', 'Embed', 'Table', 'HorizontalRule'],
             ['TextColor', 'BGColor', 'Smiley'],
             ['Format', 'Font', 'FontSize'],
+            ['Styles', 'CodeSnippet'],  # ✅ Added code and style options
             ['Preview', 'RemoveFormat', 'Source']
         ],
         'height': 300,
         'width': '100%',
         'extraPlugins': ','.join([
             'uploadimage', 'autogrow', 'smiley', 'colorbutton', 'font',
-            'preview', 'embed', 'autoembed', 'widget', 'lineutils'
+            'preview', 'embed', 'autoembed', 'widget', 'lineutils',
+            'codesnippet',  # ✅ For code blocks
+            'mathjax'       # ✅ For math equations
         ]),
+        'mathJaxLib': 'https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML',  # ✅ For math support
         'autoGrow_minHeight': 200,
         'autoGrow_maxHeight': 600,
         'removePlugins': 'stylesheetparser',
         'allowedContent': True,
     }
 }
+
 
 
 # Required for Cloudflare R2 image hosting
