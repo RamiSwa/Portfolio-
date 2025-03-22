@@ -199,7 +199,7 @@ CKEDITOR_CONFIGS = {
 
 
 # Required for Cloudflare R2 image hosting
-AWS_QUERYSTRING_AUTH = False
+# AWS_QUERYSTRING_AUTH = False
 
 
 # Static files (CSS, JavaScript, Images)
